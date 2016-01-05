@@ -8,7 +8,8 @@ var resolution = 5;
 var toolDiameter = 3;
 var toolPos = [0, 0, 0];
 var toolDirectionX = '1';
-var toolDirectionZ = '1';
+var toolDirectionY = '1';
+var animationInterval = null;
 
 function loadSphere() {
   loadModel(CSG.sphere({ radius: 25 }));
@@ -59,7 +60,6 @@ $('#file-drop-zone').bind("drop", function(e) {
 
 
 function loadModel(newModel) {
-  console.log(newModel)
   if (newModel) {
     model = newModel;
     model.setColor(0, 0.5, 1);
@@ -103,7 +103,8 @@ function calculateBoundingBox() {
 }
 
 function loadTool() {
-  pos = [boundingBox[0][0], boundingBox[0][1], boundingBox[1][2]];
+  pos = [boundingBox[0][0] + toolDiameter/2, boundingBox[0][1] + toolDiameter/2, boundingBox[1][2]];
+  toolPath = [[pos[0], pos[1], pos[2]]];
   toolPos = pos;
   tool = CSG.cylinder({ radius: toolDiameter/2, start: pos, end: [pos[0], pos[1], pos[2]+50] });
   tool.setColor(1, 0, 0);
@@ -117,41 +118,56 @@ function hasCollided() {
   return false;
 }
 
-function moveTool() {
+function stepTool() {
   pos = toolPos;
-
   if ((toolDirectionX == 1 &&
         pos[0] + ((resolution + (toolDiameter/2)) * toolDirectionX) <= boundingBox[1][0]) ||
       (toolDirectionX == -1 &&
-        pos[0] - ((resolution + (toolDiameter/2)) * toolDirectionX) >= boundingBox[0][0])
+        pos[0] + ((resolution + (toolDiameter/2)) * toolDirectionX) >= boundingBox[0][0])
       ) {
     // Continue moving in the same direction left or right
     pos[0] += resolution * toolDirectionX;
   }
-  else if ((toolDirectionZ == 1 &&
-             pos[2] + ((resolution + (toolDiameter/2)) * toolDirectionZ) <= boundingBox[1][2]) ||
-           (toolDirectionZ == -1 &&
-             pos[2] - ((resolution + (toolDiameter/2)) * toolDirectionZ) >= boundingBox[1][2])
+  else if ((toolDirectionY == 1 &&
+             pos[1] + ((resolution + (toolDiameter/2)) * toolDirectionY) <= boundingBox[1][1]) ||
+           (toolDirectionY == -1 &&
+             pos[1] + ((resolution + (toolDiameter/2)) * toolDirectionY) >= boundingBox[0][1])
            ) {
     // Move tool away from us and change X direction
-    pos[2] += resolution * toolDirectionZ;
+    pos[1] += resolution * toolDirectionY;
     toolDirectionX = toolDirectionX * -1;
   }
-  else {
+  else if (pos[2] - resolution >= boundingBox[0][2]) {
     // Move tool down a layer and change Z direction
-    pos[1] -= resolution;
-    toolDirectionZ = toolDirectionZ * -1;
+    pos[2] -= resolution;
+    toolDirectionY = toolDirectionY * -1;
+  }
+  else {
+    // Completed path as got to the bottom of the bounding boundingBox
+    clearInterval(animationInterval);
+    animationInterval = null;
+    return false;
   }
 
-  toolPath.push(pos);
+  toolPath.push([pos[0], pos[1], pos[2]]);
   toolPos = pos;
-  console.log(toolPos);
+  //console.log(toolPos);
   tool = CSG.cylinder({ radius: toolDiameter/2, start: pos, end: [pos[0], pos[1], pos[2]+50] });
   tool.setColor(1, 0, 0);
   if (hasCollided()) {
     console.log('COLLISION');
   }
   rebuild();
+}
+
+function playPauseTool() {
+  if (animationInterval) {
+    clearInterval(animationInterval);
+    animationInterval = null;
+  }
+  else {
+    animationInterval = setInterval(stepTool, 10);
+  }
 }
 
 var timeout = null;
@@ -166,12 +182,13 @@ function rebuild() {
     viewer.meshes.push(tool.toMesh());
   }
   viewer.boundingBox = boundingBox;
+  viewer.toolPath = toolPath;
   viewer.gl.ondraw();
 }
 
 rebuild();
-//loadSphere();
-//loadTool();
+loadSphere();
+loadTool();
 //hasCollided();
 
 

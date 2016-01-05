@@ -425,7 +425,7 @@ OpenJsCad.Viewer.prototype = {
       gl.begin(gl.LINES);
       var plate = 200;
       if(this.plate) {
-        gl.color(.8,.8,.8,.5); // -- minor grid
+        gl.color(0,0,0,.025); // -- minor grid
         for(var x=-plate/2; x<=plate/2; x++) {
           if (x%10 && x != 0) {
             gl.vertex(-plate/2, x, 0);
@@ -434,7 +434,7 @@ OpenJsCad.Viewer.prototype = {
             gl.vertex(x, plate/2, 0);
           }
         }
-        gl.color(.5,.5,.5,.5); // -- major grid
+        gl.color(0,0,0,.05); // -- major grid
         for(var x=-plate/2; x<=plate/2; x+=10) {
           if (x != 0) {
             gl.vertex(-plate/2, x, 0);
@@ -530,6 +530,22 @@ OpenJsCad.Viewer.prototype = {
 
       gl.vertex(boundingBox[0][0], boundingBox[1][1], boundingBox[0][2]);
       gl.vertex(boundingBox[1][0], boundingBox[1][1], boundingBox[0][2]);
+
+      gl.end();
+      gl.disable(gl.BLEND);
+    }
+
+    // Draw tool path line
+    if (this.toolPath && this.toolPath.length >= 2) {
+      gl.enable(gl.BLEND);
+      gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+      gl.begin(gl.LINES);
+      gl.color(1, 0, 0, 0.5);
+
+      for (var i = 1; i < this.toolPath.length; i++) {
+        gl.vertex(this.toolPath[i-1][0], this.toolPath[i-1][1], this.toolPath[i-1][2]);
+        gl.vertex(this.toolPath[i][0], this.toolPath[i][1], this.toolPath[i][2]);
+      }
 
       gl.end();
       gl.disable(gl.BLEND);
