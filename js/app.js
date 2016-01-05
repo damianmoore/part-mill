@@ -4,13 +4,16 @@ var tool = null;
 var boundingBox = null;
 var toolPath = []
 
-var resolution = 5;
-var toolDiameter = 3;
+var resolution = 1.5;
+var toolDiameter = 1.5;
 var toolPos = [0, 0, 0];
-var toolDirectionX = '1';
-var toolDirectionY = '1';
+var toolDirectionX = 1;
+var toolDirectionY = 1;
 var animationInterval = null;
 var calculatingStep = false;
+var duration = 0;
+var start = null;
+var durationInterval = null;
 
 function loadSphere() {
   loadModel(CSG.sphere({ radius: 25 }));
@@ -68,6 +71,7 @@ function loadModel(newModel) {
     model = null;
   }
   calculateBoundingBox();
+  loadTool();
   rebuild();
 }
 
@@ -106,6 +110,9 @@ function loadTool() {
   pos = [boundingBox[0][0] + toolDiameter/2, boundingBox[0][1] + toolDiameter/2, boundingBox[1][2]];
   toolPath = [[pos[0], pos[1], pos[2]]];
   toolPos = pos;
+  toolDirectionX = 1;
+  toolDirectionY = 1;
+  duration = 0;
   tool = CSG.cylinder({ radius: toolDiameter/2, slices: 8, start: pos, end: [pos[0], pos[1], pos[2]+50] });
   rebuild();
 }
@@ -142,21 +149,25 @@ function stepTool() {
     toolDirectionX = toolDirectionX * -1;
   }
   else if (pos[2] - resolution >= boundingBox[0][2]) {
-    // Move tool down a layer and change Z direction
+    // Move tool down a layer and change X & Y direction
     pos[2] -= resolution;
+    toolDirectionX = toolDirectionX * -1;
     toolDirectionY = toolDirectionY * -1;
   }
   else {
     // Completed path as got to the bottom of the bounding boundingBox
     clearInterval(animationInterval);
     animationInterval = null;
+    clearInterval(durationInterval);
+    durationInterval = null;
+    updateDuration();
     return false;
   }
 
   tool = CSG.cylinder({ radius: toolDiameter/2, slices: 8, start: pos, end: [pos[0], pos[1], pos[2]+50] });
   zpos = pos[2]
   while (hasCollided()) {
-    zpos += 1;
+    zpos += resolution;
     tool = CSG.cylinder({ radius: toolDiameter/2, slices: 8, start: [pos[0], pos[1], zpos], end: [pos[0], pos[1], zpos+50] });
     tool.setColor(1, 0, 0);
     toolPos = pos;
@@ -171,10 +182,19 @@ function playPauseTool() {
   if (animationInterval) {
     clearInterval(animationInterval);
     animationInterval = null;
+    clearInterval(durationInterval);
+    durationInterval = null;
+    updateDuration();
   }
   else {
+    start = new Date().getTime();
     animationInterval = setInterval(stepTool, 1);
+    durationInterval = setInterval(updateDuration, 200);
   }
+}
+
+function updateDuration() {
+  $('#duration').html((new Date().getTime() - start)/1000 + ' secs');
 }
 
 var timeout = null;
