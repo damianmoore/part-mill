@@ -10,6 +10,7 @@ var toolPos = [0, 0, 0];
 var toolDirectionX = '1';
 var toolDirectionY = '1';
 var animationInterval = null;
+var calculatingStep = false;
 
 function loadSphere() {
   loadModel(CSG.sphere({ radius: 25 }));
@@ -27,7 +28,6 @@ function loadGourd() {
 
 function loadStl(contents) {
   polygons = ParseStl.parse(contents);
-  console.log(polygons)
   var model = CSG.fromPolygons(polygons.map(function(tri) {
     return new CSG.Polygon(tri.vertices);
   }));
@@ -106,8 +106,7 @@ function loadTool() {
   pos = [boundingBox[0][0] + toolDiameter/2, boundingBox[0][1] + toolDiameter/2, boundingBox[1][2]];
   toolPath = [[pos[0], pos[1], pos[2]]];
   toolPos = pos;
-  tool = CSG.cylinder({ radius: toolDiameter/2, start: pos, end: [pos[0], pos[1], pos[2]+50] });
-  tool.setColor(1, 0, 0);
+  tool = CSG.cylinder({ radius: toolDiameter/2, slices: 8, start: pos, end: [pos[0], pos[1], pos[2]+50] });
   rebuild();
 }
 
@@ -119,6 +118,11 @@ function hasCollided() {
 }
 
 function stepTool() {
+  if (calculatingStep) {
+    return;
+  }
+
+  calculatingStep = true;
   pos = toolPos;
   if ((toolDirectionX == 1 &&
         pos[0] + ((resolution + (toolDiameter/2)) * toolDirectionX) <= boundingBox[1][0]) ||
@@ -149,15 +153,18 @@ function stepTool() {
     return false;
   }
 
-  toolPath.push([pos[0], pos[1], pos[2]]);
-  toolPos = pos;
-  //console.log(toolPos);
-  tool = CSG.cylinder({ radius: toolDiameter/2, start: pos, end: [pos[0], pos[1], pos[2]+50] });
-  tool.setColor(1, 0, 0);
-  if (hasCollided()) {
-    console.log('COLLISION');
+  tool = CSG.cylinder({ radius: toolDiameter/2, slices: 8, start: pos, end: [pos[0], pos[1], pos[2]+50] });
+  zpos = pos[2]
+  while (hasCollided()) {
+    zpos += 1;
+    tool = CSG.cylinder({ radius: toolDiameter/2, slices: 8, start: [pos[0], pos[1], zpos], end: [pos[0], pos[1], zpos+50] });
+    tool.setColor(1, 0, 0);
+    toolPos = pos;
   }
+  toolPos = pos;
+  toolPath.push([pos[0], pos[1], zpos]);
   rebuild();
+  calculatingStep = false;
 }
 
 function playPauseTool() {
@@ -166,7 +173,7 @@ function playPauseTool() {
     animationInterval = null;
   }
   else {
-    animationInterval = setInterval(stepTool, 10);
+    animationInterval = setInterval(stepTool, 1);
   }
 }
 
