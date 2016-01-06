@@ -2,6 +2,22 @@
 
 class SurfaceStrategy extends Strategy {
 
+  pause() {
+    subModel = null;
+  }
+  unpause() {
+    this.calculateSubModel(toolPos[1]);
+  }
+
+  calculateSubModel(yPos) {
+    // Slice the model up so we only have to do collision detection with parts that are on the current Y layer.
+    var subBox = CSG.box({bbox: [
+      [this.boundingBox[0][0], yPos - toolDiameter/2, this.boundingBox[0][2]],
+      [this.boundingBox[1][0], yPos + toolDiameter/2, this.boundingBox[1][2]],
+    ]});
+    subModel = model.intersect(subBox);
+  }
+
   stepTool() {
     if (this.calculatingStep) {
       return;
@@ -28,6 +44,7 @@ class SurfaceStrategy extends Strategy {
              ) {
       // Move tool away from us and change X direction
       pos[1] += resolution * toolDirectionY;
+      this.calculateSubModel(pos[1]);
       toolDirectionX = toolDirectionX * -1;
     }
     else {

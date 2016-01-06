@@ -2,6 +2,23 @@
 
 class ProgressiveSurfaceStrategy extends Strategy {
 
+  pause() {
+    subModel = null;
+  }
+  unpause() {
+    this.calculateSubModel(toolPos[2]);
+  }
+
+  calculateSubModel(zPos) {
+    // Slice the model up so we only have to do collision detection with parts that are on the current Z layer.
+    // noFlyZone is used in combination with this so we don't go "under" the model.
+    var subBox = CSG.box({bbox: [
+      [this.boundingBox[0][0], this.boundingBox[0][1], zPos],
+      [this.boundingBox[1][0], this.boundingBox[1][1], this.boundingBox[1][2]],
+    ]});
+    subModel = model.intersect(subBox);
+  }
+
   stepTool() {
     if (this.calculatingStep) {
       return;
@@ -29,6 +46,7 @@ class ProgressiveSurfaceStrategy extends Strategy {
     else if (pos[2] - resolution >= boundingBox[0][2]) {
       // Move tool down a layer and change X & Y direction
       pos[2] -= resolution;
+      this.calculateSubModel(pos[2]);
       toolDirectionX = toolDirectionX * -1;
       toolDirectionY = toolDirectionY * -1;
     }
