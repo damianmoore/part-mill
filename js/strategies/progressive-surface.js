@@ -36,8 +36,8 @@ ProgressiveSurfaceStrategy.stepTool = function() {
   }
   else {
     // Completed path as got to the bottom of the bounding boundingBox
-    clearInterval(animationInterval);
-    animationInterval = null;
+    clearInterval(stepInterval);
+    stepInterval = null;
     clearInterval(statsInterval);
     statsInterval = null;
     updateStats();

@@ -1,18 +1,21 @@
+"use strict";
 
 var model = null;
 var tool = null;
 var boundingBox = null;
-var toolPath = []
+var toolPath = [];
+var subModel = null;
+var strategy = null;
 
-var strategy = SliceStrategy;
-
-var resolution = 5;
-var toolDiameter = 5;
+var resolution = 4;
+var toolDiameter = 4;
 var toolPos = [0, 0, 0];
 var toolDirectionX = 1;
 var toolDirectionY = 1;
-var animationInterval = null;
+
+var stepInterval = null;
 var statsInterval = null;
+var animationInterval = null;
 var duration = 0;
 var start = null;
 
@@ -31,7 +34,7 @@ function loadGourd() {
 }
 
 function loadStl(contents) {
-  polygons = ParseStl.parse(contents);
+  var polygons = ParseStl.parse(contents);
   var model = CSG.fromPolygons(polygons.map(function(tri) {
     return new CSG.Polygon(tri.vertices);
   }));
@@ -73,12 +76,13 @@ function loadModel(newModel) {
   }
   calculateBoundingBox();
   loadTool();
+  strategy = new SliceStrategy(model, boundingBox);
   rebuild();
 }
 
 function calculateBoundingBox() {
   if (model) {
-    var minX = minY = minZ = maxX = maxY = maxZ = 0;
+    var minX = 0, minY = 0, minZ = 0, maxX = 0, maxY = 0, maxZ = 0;
     var mesh = model.toMesh();
     for (var i=0; i < mesh.vertices.length; i++) {
       if (mesh.vertices[i][0] < minX) {
@@ -108,7 +112,7 @@ function calculateBoundingBox() {
 }
 
 function loadTool() {
-  pos = [boundingBox[0][0] + toolDiameter/2, boundingBox[0][1] + toolDiameter/2, boundingBox[1][2]];
+  var pos = [boundingBox[0][0] + toolDiameter/2, boundingBox[0][1] + toolDiameter/2, boundingBox[1][2]];
   toolPath = [[pos[0], pos[1], pos[2]]];
   toolPos = pos;
   toolDirectionX = 1;
@@ -119,24 +123,46 @@ function loadTool() {
 }
 
 function hasCollided() {
-  if (model.intersect(tool).toMesh().vertices.length > 0) {
+  if (subModel && subModel.polygons.length > 0 && subModel.intersect(tool).toMesh().vertices.length > 0) {
+    return true;
+  }
+  else if (!subModel && model.intersect(tool).toMesh().vertices.length > 0) {
     return true;
   }
   return false;
 }
 
 function playPauseTool() {
-  if (animationInterval) {
-    clearInterval(animationInterval);
-    animationInterval = null;
+  if (stepInterval) {
+    clearInterval(stepInterval);
+    stepInterval = null;
     clearInterval(statsInterval);
     statsInterval = null;
+    clearInterval(animationInterval);
+    animationInterval = null;
+
+    strategy.pause();
     updateStats();
+    rebuild();
   }
   else {
     start = new Date().getTime();
-    animationInterval = setInterval(strategy.stepTool.bind(null, model, boundingBox), 1);
+    strategy.unpause();
+    stepInterval = setInterval(function() {
+      var retVal = strategy.stepTool();
+      if (retVal == 'COMPLETE') {
+        strategy.pause();
+        clearInterval(stepInterval);
+        stepInterval = null;
+        clearInterval(statsInterval);
+        statsInterval = null;
+        updateStats();
+        rebuild();
+      }
+    }, 0.01);
+
     statsInterval = setInterval(updateStats, 200);
+    animationInterval = setInterval(rebuild, 33);
   }
 }
 
@@ -151,12 +177,18 @@ var viewer = new OpenJsCad.Viewer('#viewer', 100);
 
 function rebuild() {
   viewer.meshes = []
-  if (model) {
+
+  if (subModel) {
+    viewer.meshes.push(subModel.toMesh());
+  }
+  else if (model) {
     viewer.meshes.push(model.toMesh());
   }
+
   if (tool) {
     viewer.meshes.push(tool.toMesh());
   }
+
   viewer.boundingBox = boundingBox;
   viewer.toolPath = toolPath;
   viewer.gl.ondraw();
