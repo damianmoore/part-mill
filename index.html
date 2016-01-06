@@ -16,7 +16,7 @@
   </div>
 
   <div>
-    <select onChange="changeStrategy(this)">
+    <select id="strategy" onChange="changeStrategy(this)">
       <option value="SliceStrategy">Slice</option>
       <option value="SurfaceStrategy">Surface</option>
       <option value="ProgressiveSurfaceStrategy">Progressive Surface</option>
@@ -28,9 +28,9 @@
   <div>
     <textarea readonly="readonly" id="result">Drop STL file here</textarea>
     <div id="dragBox">
-        <div id="dropMsg">
-            Drop file here
-        </div>
+      <div id="dropMsg">
+        Drop file here
+      </div>
     </div>
     <div id="topDiv"></div>
   </div>

@@ -203,19 +203,22 @@ function changeStrategy(el) {
 
 function changeResolution(el) {
   resolution = parseInt(el.value, 10);
+  changeStrategy(document.getElementById('strategy'));
 }
 
 function changeToolDiameter(el) {
   toolDiameter = parseInt(el.value, 10);
+  changeStrategy(document.getElementById('strategy'));
   rebuild();
   if (model) {
     loadTool();
   }
 }
 
-changeResolution(document.getElementById('resolution'));
-changeToolDiameter(document.getElementById('toolDiameter'));
 
 rebuild();
 loadSphere();
 loadTool();
+
+changeResolution(document.getElementById('resolution'));
+changeToolDiameter(document.getElementById('toolDiameter'));
