@@ -87,9 +87,16 @@ class SliceStrategy {
 
       tool = CSG.cylinder({ radius: toolDiameter/2, slices: 8, start: [pos[0], pos[1], zpos], end: [pos[0], pos[1], zpos+50] });
       tool.setColor(1, 0, 0);
-      toolPos = pos;
     }
     toolPos = pos;
+
+    // Optimise the path by removing points that are along a straight line
+    var minusOne = toolPath[toolPath.length-1];
+    var minusTwo = toolPath[toolPath.length-2];
+    if (minusOne && minusTwo && pos[1] == minusOne[1] && pos[1] == minusTwo[1] && pos[2] == minusOne[2] && pos[2] == minusTwo[2]) {
+      toolPath.splice(toolPath.length-1);
+    }
+
     toolPath.push([pos[0], pos[1], zpos]);
     this.calculatingStep = false;
   }
