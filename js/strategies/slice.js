@@ -1,10 +1,9 @@
 "use strict";
 
-class SliceStrategy {
+class SliceStrategy extends Strategy {
   constructor(model, boundingBox) {
-    this.model = model;
-    this.boundingBox = boundingBox;
-    this.calculatingStep = false;
+    super(model, boundingBox);
+
     this.gridPos = [0, 0];  // X, Y
 
     var arraySize = [
@@ -26,6 +25,8 @@ class SliceStrategy {
   }
 
   calculateSubModel(zPos) {
+    // Slice the model up so we only have to do collision detection with parts that are on the current Z layer.
+    // noFlyZone is used in combination with this so we don't go "under" the model.
     var subBox = CSG.box({bbox: [
       [this.boundingBox[0][0], this.boundingBox[0][1], zPos],
       [this.boundingBox[1][0], this.boundingBox[1][1], zPos + resolution],
@@ -89,14 +90,7 @@ class SliceStrategy {
       tool.setColor(1, 0, 0);
     }
     toolPos = pos;
-
-    // Optimise the path by removing points that are along a straight line
-    var minusOne = toolPath[toolPath.length-1];
-    var minusTwo = toolPath[toolPath.length-2];
-    if (minusOne && minusTwo && pos[1] == minusOne[1] && pos[1] == minusTwo[1] && pos[2] == minusOne[2] && pos[2] == minusTwo[2]) {
-      toolPath.splice(toolPath.length-1);
-    }
-
+    this.optimisePath([pos[0], pos[1], zpos]);
     toolPath.push([pos[0], pos[1], zpos]);
     this.calculatingStep = false;
   }

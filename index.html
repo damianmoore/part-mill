@@ -7,13 +7,24 @@
 <body>
   <div id="viewer" class="viewer" style="width: 100%; height: 600px;"></div>
 
-  <input type="button" onClick="loadSphere()" value="Load Sphere" />
-  <input type="button" onClick="loadTool()" value="Load Tool" />
-  <input type="button" onClick="loadGourd()" value="Load Gourd" />
-  <input type="button" onClick="alert(hasCollided())" value="Has Collided?" />
-  <input type="button" onClick="stepTool()" value="Step Tool" />
-  <input type="button" onClick="playPauseTool()" value="Run/Pause Tool" />
-  <span id="stats"></span>
+  <div>
+    <input type="button" onClick="loadSphere()" value="Load Sphere" />
+    <input type="button" onClick="loadTool()" value="Load Tool" />
+    <input type="button" onClick="stepTool()" value="Step Tool" />
+    <input type="button" onClick="playPauseTool()" value="Run/Pause Tool" />
+    <span id="stats"></span>
+  </div>
+
+  <div>
+    <select onChange="changeStrategy(this)">
+      <option value="SliceStrategy">Slice</option>
+      <option value="SurfaceStrategy">Surface</option>
+      <option value="ProgressiveSurfaceStrategy">Progressive Surface</option>
+    </select>
+    Resolution: <input type="number" id="resolution" value="3" onKeyup="changeResolution(this)", onChange="changeResolution(this)" />
+    Tool Diameter: <input type="number" id="toolDiameter" value="3" onKeyup="changeToolDiameter(this)", onChange="changeToolDiameter(this)" />
+  </div>
+
   <div>
     <textarea readonly="readonly" id="result">Drop STL file here</textarea>
     <div id="dragBox">
@@ -29,12 +40,13 @@
   <script src="js/libs/csg.js"></script>
   <script src="js/libs/jquery.js"></script>
   <script src="js/libs/jquery.hammer.js"></script>
-  <script src="js/shapes/gourd.js"></script>
 
   <script src="js/csg-additions.js"></script>
   <script src="js/openjscad.js"></script>
   <script src="js/parse-stl.js"></script>
+  <script src="js/file-drop.js"></script>
 
+  <script src="js/strategies/strategy.js"></script>
   <script src="js/strategies/slice.js"></script>
   <script src="js/strategies/surface.js"></script>
   <script src="js/strategies/progressive-surface.js"></script>

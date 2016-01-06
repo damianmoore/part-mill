@@ -5,6 +5,11 @@ var tool = null;
 var boundingBox = null;
 var toolPath = [];
 var subModel = null;
+var strategies = {
+  'SliceStrategy': SliceStrategy,
+  'SurfaceStrategy': SurfaceStrategy,
+  'ProgressiveSurfaceStrategy': ProgressiveSurfaceStrategy,
+}
 var strategy = null;
 
 var resolution = 4;
@@ -21,16 +26,6 @@ var start = null;
 
 function loadSphere() {
   loadModel(CSG.sphere({ radius: 25 }));
-}
-
-function loadGourd() {
-  console.log(gourdModel)
-  var gourd = CSG.fromPolygons(gourdModel.triangles.map(function(tri) {
-    return new CSG.Polygon(tri.map(function(i) {
-      return new CSG.Vertex(gourdModel.vertices[i], gourdModel.normals[i]);
-    }));
-  }));
-  loadModel(gourd);
 }
 
 function loadStl(contents) {
@@ -106,7 +101,7 @@ function calculateBoundingBox() {
     }
     boundingBox = [
       [minX, minY, minZ],
-      [maxX, maxY, maxZ]
+      [maxX, maxY, maxZ],
     ]
   }
 }
@@ -156,14 +151,22 @@ function playPauseTool() {
         stepInterval = null;
         clearInterval(statsInterval);
         statsInterval = null;
-        updateStats();
+        clearInterval(animationInterval);
+        animationInterval = null;
         rebuild();
+        updateStats();
       }
-    }, 0.01);
+    }, 0.001);
 
     statsInterval = setInterval(updateStats, 200);
     animationInterval = setInterval(rebuild, 33);
   }
+}
+
+function stepTool() {
+  strategy.stepTool();
+  rebuild();
+  updateStats();
 }
 
 function updateStats() {
@@ -194,54 +197,25 @@ function rebuild() {
   viewer.gl.ondraw();
 }
 
+function changeStrategy(el) {
+  strategy = new strategies[el.value](model, boundingBox);
+}
+
+function changeResolution(el) {
+  resolution = parseInt(el.value, 10);
+}
+
+function changeToolDiameter(el) {
+  toolDiameter = parseInt(el.value, 10);
+  rebuild();
+  if (model) {
+    loadTool();
+  }
+}
+
+changeResolution(document.getElementById('resolution'));
+changeToolDiameter(document.getElementById('toolDiameter'));
+
 rebuild();
 loadSphere();
 loadTool();
-//hasCollided();
-
-
-
-
-
-function handleFileDrop(files) {
-    for (var i = 0; i < files.length; i++) {
-        var fileName = files[i].name;
-        var fileType = files[i].type;
-        var fileSize = files[i].size;
-        var r = new FileReader();
-        r.onload = function(e) {
-            var contents = e.target.result;
-            var extensionPat = /.*\.(js|txt|html|java|c|cpp|sql|stl)$/i;
-            var mimePat = /^text.*/i;
-            if (!extensionPat.test(fileName) && !mimePat.test(fileType)) {
-                contents = btoa(contents);
-                fileSize = contents.length;
-            }
-            $('#result').val("Got the file.\n" + "name: " + fileName + "\n" + "type: " + fileType + "\n" + "size: " + fileSize + " bytes\n" + "contents:\n\n" + contents);
-            loadStl(contents);
-        }
-        r.readAsBinaryString(files[i]);
-    }
-}
-
-$('#result').bind("dragenter dragover", function() {
-    $('#dragBox, #topDiv').show();
-});
-$('#topDiv').bind("dragleave dragout", function() {
-    $('#dragBox, #topDiv').hide();
-});
-$('#topDiv').bind("dragenter dragover", function(e) {
-    e.preventDefault();
-    return false;
-});
-$('#topDiv').bind("drop", function(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    e.originalEvent.preventDefault();
-    e.originalEvent.stopPropagation();
-    $('#dragBox, #topDiv').hide();
-    var dt = e.originalEvent.dataTransfer;
-    var files = dt.files;
-    handleFileDrop(files);
-    return false;
-})
