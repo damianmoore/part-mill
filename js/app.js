@@ -202,12 +202,12 @@ function changeStrategy(el) {
 }
 
 function changeResolution(el) {
-  resolution = parseInt(el.value, 10);
+  resolution = parseFloat(el.value);
   changeStrategy(document.getElementById('strategy'));
 }
 
 function changeToolDiameter(el) {
-  toolDiameter = parseInt(el.value, 10);
+  toolDiameter = parseFloat(el.value);
   changeStrategy(document.getElementById('strategy'));
   rebuild();
   if (model) {

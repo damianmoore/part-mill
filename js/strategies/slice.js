@@ -6,15 +6,17 @@ class SliceStrategy extends Strategy {
 
     this.gridPos = [0, 0];  // X, Y
 
-    var arraySize = [
-      parseInt((boundingBox[1][0] - boundingBox[0][0]) / resolution, 10),
-      parseInt((boundingBox[1][1] - boundingBox[0][1]) / resolution, 10),
-    ];
-    this.noFlyZone = Array.apply(0, Array(arraySize[0])).map(function() {
-      return Array.apply(0, Array(arraySize[1])).map(function() {
-        return false;
+    if (resolution) {
+      var arraySize = [
+        parseInt((boundingBox[1][0] - boundingBox[0][0]) / resolution, 10),
+        parseInt((boundingBox[1][1] - boundingBox[0][1]) / resolution, 10),
+      ];
+      this.noFlyZone = Array.apply(0, Array(arraySize[0])).map(function() {
+        return Array.apply(0, Array(arraySize[1])).map(function() {
+          return false;
+        });
       });
-    });
+    }
   }
 
   pause() {
