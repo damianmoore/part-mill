@@ -5,6 +5,23 @@ class Strategy {
     this.model = model;
     this.boundingBox = boundingBox;
     this.calculatingStep = false;
+    this.collisionMesh = null;
+  }
+
+  hasCollided() {
+    if (subModel && subModel.polygons.length > 0) {
+      this.collisionMesh = subModel.intersect(tool).toMesh();
+      if (this.collisionMesh.vertices.length > 0) {
+        return true;
+      }
+    }
+    else if (!subModel) {
+      this.collisionMesh = subModel.intersect(tool).toMesh();
+      if (this.collisionMesh.vertices.length > 0) {
+        return true;
+      }
+    }
+    return false;
   }
 
   optimisePath(pos) {

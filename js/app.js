@@ -117,16 +117,6 @@ function loadTool() {
   rebuild();
 }
 
-function hasCollided() {
-  if (subModel && subModel.polygons.length > 0 && subModel.intersect(tool).toMesh().vertices.length > 0) {
-    return true;
-  }
-  else if (!subModel && model.intersect(tool).toMesh().vertices.length > 0) {
-    return true;
-  }
-  return false;
-}
-
 function playPauseTool() {
   if (stepInterval) {
     clearInterval(stepInterval);

@@ -81,7 +81,7 @@ class SliceStrategy extends Strategy {
 
     tool = CSG.cylinder({ radius: toolDiameter/2, slices: 8, start: pos, end: [pos[0], pos[1], pos[2]+50] });
     var zpos = pos[2];
-    if (this.noFlyZone[this.gridPos[0]][this.gridPos[1]] || hasCollided()) {
+    if (this.noFlyZone[this.gridPos[0]][this.gridPos[1]] || this.hasCollided()) {
       this.noFlyZone[this.gridPos[0]][this.gridPos[1]] = true;
 
       // Add extra toolPath node directly above last one

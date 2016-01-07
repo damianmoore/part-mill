@@ -117,7 +117,6 @@ ParseStl.parse = function(data) {
   var binData = ParseStl.ensureBinary(data);
   var faces =  ParseStl.isBinary(binData) ?
     ParseStl.parseBinary(binData) : ParseStl.parseASCII(ParseStl.ensureString(data));
-  console.log(faces.length);
 
   return faces;
 }
