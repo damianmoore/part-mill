@@ -12,14 +12,14 @@ function handleFileDrop(files) {
                 contents = btoa(contents);
                 fileSize = contents.length;
             }
-            $('#result').val("Got the file.\n" + "name: " + fileName + "\n" + "type: " + fileType + "\n" + "size: " + fileSize + " bytes\n" + "contents:\n\n" + contents);
+            //$('#result').val("Got the file.\n" + "name: " + fileName + "\n" + "type: " + fileType + "\n" + "size: " + fileSize + " bytes\n" + "contents:\n\n" + contents);
             loadStl(contents);
         }
         r.readAsBinaryString(files[i]);
     }
 }
 
-$('#result').bind("dragenter dragover", function() {
+$('#viewer').bind("dragenter dragover", function() {
     $('#dragBox, #topDiv').show();
 });
 $('#topDiv').bind("dragleave dragout", function() {
