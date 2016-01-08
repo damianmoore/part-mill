@@ -1,31 +1,24 @@
-var React = require('react');
-
-var Model = require('./Model');
-var ToolAndProcess = require('./ToolAndProcess');
-var Generate = require('./Generate');
+import React, { Component, PropTypes } from 'react'
 
 
-var Toolbox = React.createClass({
-  propTypes: {
-    items: React.PropTypes.array,
-  },
-  getDefaultProps: function() {
-    return {
-      items: [
-        <Model />,
-        <ToolAndProcess />,
-        <Generate />,
-      ],
-    };
-  },
-  render: function() {
+export default class Toolbox extends Component {
+  handleClick(e) {
+    this.props.onToolboxVisibilityClick()
+  }
+  render() {
+    var items = ''
+    if (this.props.visibility) {
+      items = this.props.items
+    }
     return (
       <div>
-        <h1>G-code Generator</h1>
-        {this.props.items}
+        <h1 onClick={e => this.handleClick(e)}>G-code Generator</h1>
+        {items}
       </div>
     );
   }
-});
+}
 
-module.exports = Toolbox;
+Toolbox.propTypes = {
+  items: React.PropTypes.array,
+}

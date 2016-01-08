@@ -1,19 +1,29 @@
-var React = require('react');
+import React, { Component, PropTypes } from 'react'
 
 
-var Generate = React.createClass({
-  render: function() {
+export default class Generate extends Component {
+  handlePlayPauseClick(e) {
+    this.props.onPlayPauseClick()
+    playPauseTool()
+  }
+  render() {
+    var playPauseText = 'Generate'
+    var stepButton = ''
+    if (this.props.generatingPath) {
+      playPauseText = 'Pause'
+    }
+    else {
+      stepButton = <button className="button" onClick={stepTool}>Step Tool</button>
+    }
     return (
       <div>
         <h2>Generate</h2>
         <div className="options">
-          <button className="button" onClick={playPauseTool}>Generate / Pause</button>
-          <button className="button" onClick={stepTool}>Step Tool</button>
+          <button className="button" onClick={e => this.handlePlayPauseClick(e)}>{playPauseText}</button>
+          {stepButton}
           <span id="stats"></span>
         </div>
       </div>
-    );
+    )
   }
-});
-
-module.exports = Generate;
+}

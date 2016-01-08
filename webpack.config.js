@@ -4,7 +4,7 @@ var path = require("path");
 module.exports = {
   cache: true,
   debug: false,
-  entry: "./js/app-tmp.js",
+  entry: "./js/index.js",
   devtool: "source-map",
   output: {
     path: path.join(__dirname, "js"),
@@ -24,7 +24,7 @@ module.exports = {
         loader: 'babel',
         query:
           {
-            presets: ['react']
+            presets: ['es2015', 'react']
           }
       },
       {

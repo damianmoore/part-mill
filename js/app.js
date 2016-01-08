@@ -47,22 +47,6 @@ function pickFile(elemId) {
   }
 }
 
-
-var holder = document.getElementById('file-drop-zone');
-
-$('#file-drop-zone').bind("drop", function(e) {
-  e.preventDefault();
-  e.stopPropagation();
-  e.originalEvent.preventDefault();
-  e.originalEvent.stopPropagation();
-  $('#dragBox, #topDiv').hide();
-  var dt = e.originalEvent.dataTransfer;
-  var files = dt.files;
-  handleFileDrop(files);
-  return false;
-})
-
-
 function loadModel(newModel) {
   if (newModel) {
     model = newModel;

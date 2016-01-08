@@ -1,8 +1,8 @@
-var React = require('react');
+import React, { Component, PropTypes } from 'react'
 
 
-var ToolAndProcess = React.createClass({
-  render: function() {
+export default class Generate extends Component {
+  render() {
     return (
       <div>
         <h2>Tool And Process</h2>
@@ -19,8 +19,6 @@ var ToolAndProcess = React.createClass({
           <input type="number" id="toolDiameter" defautValue="3" onKeyup={changeToolDiameter} onChange={changeToolDiameter} />
         </div>
       </div>
-    );
+    )
   }
-});
-
-module.exports = ToolAndProcess;
+}
