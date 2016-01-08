@@ -1,0 +1,26 @@
+button {
+    font-size: 12px;
+    line-height: 15px;
+    font-weight: bold;
+    padding: 6px 10px 4px 10px;
+    color: $white;
+    text-align: center;
+    cursor: pointer;
+    border: 0;
+    background: $blue; /* Old browsers */
+    background: -moz-linear-gradient(top, $blue 0%, $dark-blue 100%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(top, $blue 0%, $dark-blue 100%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to bottom, $blue 0%, $dark-blue 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$blue', endColorstr='$dark-blue',GradientType=0 ); /* IE6-9 */
+}
+button:active, button.active {
+    background: $dark-blue; /* Old browsers */
+    background: -moz-linear-gradient(top, $dark-blue 0%, $blue 100%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(top, $dark-blue 0%, $blue 100%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to bottom, $dark-blue 0%, $blue 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$dark-blue', endColorstr='$blue',GradientType=0 ); /* IE6-9 */
+}
+
+input, select, button {
+    margin-bottom: 10px;
+}

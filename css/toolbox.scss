@@ -1,0 +1,42 @@
+#toolbox {
+    width: 250px;
+    background: rgba(0,0,0,0.8);
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    color: $white;
+    font-size: 12px;
+    line-height: 15px;
+
+    h1 {
+        font-size: 20px;
+        line-height: 20px;
+        margin: 0;
+        padding: 20px;
+    }
+    h2 {
+        font-size: 15px;
+        line-height: 15px;
+        padding: 10px 20px;
+        background: rgba(0,0,0,0.3);
+        margin: 0 0 1px 0;
+    }
+    p {
+        margin: 0 0 10px 0;
+    }
+    .options {
+        padding: 10px 20px;
+
+        #drop-zone {
+            background: rgba(255,255,255,0.8);
+            margin-bottom: 10px;
+            color: $black;
+            text-align: center;
+            padding: 10px;
+        }
+
+        input, select, button {
+            width: 100%;
+        }
+    }
+}

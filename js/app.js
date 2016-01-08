@@ -1,8 +1,10 @@
 "use strict";
 
+
 var model = null;
 var tool = null;
 var boundingBox = null;
+var boundingBoxDimensions = [0, 0, 0];
 var toolPath = [];
 var subModel = null;
 var strategies = {
@@ -103,6 +105,11 @@ function calculateBoundingBox() {
       [minX, minY, minZ],
       [maxX, maxY, maxZ],
     ]
+    boundingBoxDimensions = [
+      maxX - minX,
+      maxY - minY,
+      maxZ - minZ,
+    ]
   }
 }
 
@@ -113,7 +120,7 @@ function loadTool() {
   toolDirectionX = 1;
   toolDirectionY = 1;
   duration = 0;
-  tool = CSG.cylinder({ radius: toolDiameter/2, slices: 8, start: pos, end: [pos[0], pos[1], pos[2]+50] });
+  tool = CSG.cylinder({ radius: toolDiameter/2, slices: 8, start: pos, end: [pos[0], pos[1], pos[2]+boundingBoxDimensions[2]] });
   rebuild();
 }
 
@@ -146,7 +153,7 @@ function playPauseTool() {
         rebuild();
         updateStats();
       }
-    }, 0.001);
+    }, 1);
 
     statsInterval = setInterval(updateStats, 200);
     animationInterval = setInterval(rebuild, 33);
@@ -187,18 +194,18 @@ function rebuild() {
   viewer.gl.ondraw();
 }
 
-function changeStrategy(el) {
-  strategy = new strategies[el.value](model, boundingBox);
+function changeStrategy(e) {
+  strategy = new strategies[e.target.value](model, boundingBox);
+  loadTool();
 }
 
-function changeResolution(el) {
-  resolution = parseFloat(el.value);
-  changeStrategy(document.getElementById('strategy'));
+function changeResolution(e) {
+  resolution = parseFloat(e.target.value);
+  loadTool();
 }
 
-function changeToolDiameter(el) {
-  toolDiameter = parseFloat(el.value);
-  changeStrategy(document.getElementById('strategy'));
+function changeToolDiameter(e) {
+  toolDiameter = parseFloat(e.target.value);
   rebuild();
   if (model) {
     loadTool();
@@ -209,6 +216,3 @@ function changeToolDiameter(el) {
 rebuild();
 loadSphere();
 loadTool();
-
-changeResolution(document.getElementById('resolution'));
-changeToolDiameter(document.getElementById('toolDiameter'));

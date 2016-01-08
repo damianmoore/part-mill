@@ -55,14 +55,14 @@ class ProgressiveSurfaceStrategy extends Strategy {
       return 'COMPLETE';
     }
 
-    tool = CSG.cylinder({ radius: toolDiameter/2, slices: 8, start: pos, end: [pos[0], pos[1], pos[2]+50] });
+    tool = CSG.cylinder({ radius: toolDiameter/2, slices: 8, start: pos, end: [pos[0], pos[1], pos[2]+boundingBoxDimensions[2]] });
     var zpos = pos[2];
     if (this.hasCollided()) {
       // We have the mesh left over from the intersection of the sub model and tool so we can just pick the highest vertex from that.
       for (var vertex of this.collisionMesh.vertices) {
         if (vertex[2] > zpos) {
           zpos = vertex[2];
-          tool = CSG.cylinder({ radius: toolDiameter/2, slices: 8, start: [pos[0], pos[1], zpos], end: [pos[0], pos[1], zpos+50] });
+          tool = CSG.cylinder({ radius: toolDiameter/2, slices: 8, start: [pos[0], pos[1], zpos], end: [pos[0], pos[1], zpos+boundingBoxDimensions[2]] });
           tool.setColor(1, 0, 0);
           toolPos = pos;
         }

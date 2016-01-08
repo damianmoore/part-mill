@@ -1,0 +1,25 @@
+{
+  "name": "gcode-generator",
+  "version": "0.0.1",
+  "description": "G-code Generator",
+  "author": "Damian Moore",
+  "repository": "https://github.com/damianmoore/gcode-generator",
+  "main": "js/app.js",
+  "dependencies": {
+    "babel-core": "^6.4.0",
+    "babel-loader": "^6.2.1",
+    "babel-preset-react": "^6.3.13",
+    "css-loader": "^0.23.1",
+    "jsx-loader": "^0.13.2",
+    "node-sass": "^3.4.2",
+    "react": "^0.14.6",
+    "react-dom": "^0.14.6",
+    "sass-loader": "^3.1.2",
+    "style-loader": "^0.13.0",
+    "webpack": "^1.12.10"
+  },
+  "scripts": {
+    "start": "webpack -d --devtool cheap-module-eval-source-map --progress --colors --watch",
+    "build": "webpack"
+  }
+}

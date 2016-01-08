@@ -79,7 +79,7 @@ class SliceStrategy extends Strategy {
       toolPath.push([pos[0], pos[1], boundingBox[1][2]]);
     }
 
-    tool = CSG.cylinder({ radius: toolDiameter/2, slices: 8, start: pos, end: [pos[0], pos[1], pos[2]+50] });
+    tool = CSG.cylinder({ radius: toolDiameter/2, slices: 8, start: pos, end: [pos[0], pos[1], pos[2]+boundingBoxDimensions[2]] });
     var zpos = pos[2];
     if (this.noFlyZone[this.gridPos[0]][this.gridPos[1]] || this.hasCollided()) {
       this.noFlyZone[this.gridPos[0]][this.gridPos[1]] = true;
@@ -88,7 +88,7 @@ class SliceStrategy extends Strategy {
       zpos = boundingBox[1][2];
       toolPath.push([prevPoint[0], prevPoint[1], zpos]);
 
-      tool = CSG.cylinder({ radius: toolDiameter/2, slices: 8, start: [pos[0], pos[1], zpos], end: [pos[0], pos[1], zpos+50] });
+      tool = CSG.cylinder({ radius: toolDiameter/2, slices: 8, start: [pos[0], pos[1], zpos], end: [pos[0], pos[1], zpos+boundingBoxDimensions[2]] });
       tool.setColor(1, 0, 0);
     }
     toolPos = pos;
