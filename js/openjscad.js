@@ -54,11 +54,11 @@ OpenJsCad.env = function() {
 OpenJsCad.Viewer = function(containerelement, initialdepth) {
   var gl = GL.create();
   this.gl = gl;
-  this.angleX = -60;
+  this.angleX = -80;
   this.angleY = 0;
-  this.angleZ = -45;
-  this.viewpointX = 0;
-  this.viewpointY = -5;
+  this.angleZ = -30;
+  this.viewpointX = 5;
+  this.viewpointY = 2;
   this.viewpointZ = initialdepth;
 
   this.touch = {

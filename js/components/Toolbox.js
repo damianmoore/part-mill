@@ -12,7 +12,7 @@ export default class Toolbox extends Component {
     }
     return (
       <div>
-        <h1 onClick={e => this.handleClick(e)}>G-code Generator</h1>
+        <h1 onClick={e => this.handleClick(e)}>Part Mill <span className="beta">beta</span></h1>
         {items}
       </div>
     );

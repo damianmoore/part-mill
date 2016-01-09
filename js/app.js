@@ -30,6 +30,15 @@ function loadSphere() {
   loadModel(CSG.sphere({ radius: 25 }));
 }
 
+function loadMonkey() {
+  var monkey = CSG.fromPolygons(monkeyModel.triangles.map(function(tri) {
+    return new CSG.Polygon(tri.map(function(i) {
+      return new CSG.Vertex(monkeyModel.vertices[i], monkeyModel.normals[i]);
+    }));
+  }));
+  loadModel(monkey);
+}
+
 function loadStl(contents) {
   var polygons = ParseStl.parse(contents);
   var model = CSG.fromPolygons(polygons.map(function(tri) {
@@ -157,7 +166,7 @@ function updateStats() {
 }
 
 var timeout = null;
-var viewer = new OpenJsCad.Viewer('#viewer', 100);
+var viewer = new OpenJsCad.Viewer('#viewer', 40);
 
 function rebuild() {
   viewer.meshes = []
@@ -198,5 +207,5 @@ function changeToolDiameter(e) {
 
 
 rebuild();
-loadSphere();
+loadMonkey();
 loadTool();

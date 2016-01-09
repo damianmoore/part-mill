@@ -13,9 +13,9 @@ export default class Generate extends Component {
             <option value="SurfaceStrategy">Surface</option>
             <option value="ProgressiveSurfaceStrategy">Progressive Surface</option>
           </select>
-          <p>Resolution:</p>
+          <p>Resolution (mm):</p>
           <input type="number" id="resolution" defautValue="3" onKeyup={changeResolution} onChange={changeResolution} />
-          <p>Tool Diameter:</p>
+          <p>Tool Diameter (mm):</p>
           <input type="number" id="toolDiameter" defautValue="3" onKeyup={changeToolDiameter} onChange={changeToolDiameter} />
         </div>
       </div>
