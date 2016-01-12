@@ -14,14 +14,13 @@ var strategies = {
 }
 var strategy = null;
 
-var resolution = 4;
-var toolDiameter = 4;
+var resolution = 2;
+var toolDiameter = 2;
 var toolPos = [0, 0, 0];
 var toolDirectionX = 1;
 var toolDirectionY = 1;
 
 var stepInterval = null;
-var statsInterval = null;
 var animationInterval = null;
 var duration = 0;
 var start = null;
@@ -121,8 +120,6 @@ function playPauseTool() {
   if (stepInterval) {
     clearInterval(stepInterval);
     stepInterval = null;
-    clearInterval(statsInterval);
-    statsInterval = null;
     clearInterval(animationInterval);
     animationInterval = null;
 
@@ -139,8 +136,6 @@ function playPauseTool() {
         strategy.pause();
         clearInterval(stepInterval);
         stepInterval = null;
-        clearInterval(statsInterval);
-        statsInterval = null;
         clearInterval(animationInterval);
         animationInterval = null;
         rebuild();
@@ -148,8 +143,10 @@ function playPauseTool() {
       }
     }, 1);
 
-    statsInterval = setInterval(updateStats, 200);
-    animationInterval = setInterval(rebuild, 33);
+    animationInterval = setInterval(function() {
+      rebuild();
+      updateStats()
+    }, 500);
   }
 }
 
