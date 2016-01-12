@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 
-import { toggleToolboxVisibility, playPathGeneration, pathPathGeneration, setToolPath, setToolPos, rebuildScene, setModel, setSubModel, setBoundingBox, setToolAndProcess, setStepMode, clearStepMode } from './actions'
+import { toggleToolboxVisibility, playPathGeneration, pathPathGeneration, setToolPath, setPathAndSubModel, completePathGeneration, setToolPos, rebuildScene, setModel, setSubModel, setBoundingBox, setToolAndProcess, setStepMode, clearStepMode } from './actions'
 import Viewer from './components/Viewer'
 import Toolbox from './components/Toolbox'
 import Model from './components/Model'
@@ -12,10 +12,6 @@ import PathGenerator from './path-generator'
 
 
 class Application extends Component {
-  constructor() {
-    super()
-    this.pathGenerator = new PathGenerator()
-  }
   componentDidMount() {
     const { dispatch, scene } = this.props
 
@@ -24,12 +20,16 @@ class Application extends Component {
       setToolPath: scene => dispatch(setToolPath(scene)),
       clearStepMode: scene => dispatch(clearStepMode(scene)),
       setSubModel: scene => dispatch(setSubModel(scene)),
+      setPathAndSubModel: (path, subModel) => dispatch(setPathAndSubModel(path, subModel)),
+      completePathGeneration: scene => dispatch(completePathGeneration()),
     })
   }
   render() {
     const { dispatch, toolbox, scene } = this.props
 
-    this.pathGenerator.update(scene)
+    if (this.pathGenerator) {
+      this.pathGenerator.update(scene)
+    }
 
     return (
       <div>

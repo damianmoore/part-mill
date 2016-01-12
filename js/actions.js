@@ -3,6 +3,7 @@ export const PLAY_PATH_GENERATION = 'PLAY_PATH_GENERATION'
 export const PAUSE_PATH_GENERATION = 'PAUSE_PATH_GENERATION'
 export const COMPLETE_PATH_GENERATION = 'COMPLETE_PATH_GENERATION'
 export const SET_TOOL_PATH = 'SET_TOOL_PATH'
+export const SET_PATH_AND_SUB_MODEL = 'SET_PATH_AND_SUB_MODEL'
 export const SET_TOOL_POS = 'SET_TOOL_POS'
 export const REBUILD_SCENE = 'REBUILD_SCENE'
 export const SET_MODEL = 'SET_MODEL'
@@ -37,8 +38,11 @@ export function setToolPath(path) {
   return { type: SET_TOOL_PATH, path }
 }
 
+export function setPathAndSubModel(path, subModel) {
+  return { type: SET_PATH_AND_SUB_MODEL, path, subModel }
+}
+
 export function rebuildScene() {
-  console.log('rebuildScene')
   return { type: REBUILD_SCENE }
 }
 

@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux'
-import { TOGGLE_TOOLBOX_VISIBILITY, PLAY_PATH_GENERATION, PAUSE_PATH_GENERATION, COMPLETE_PATH_GENERATION, SET_TOOL_PATH, SET_TOOL_POS, SET_MODEL, SET_SUB_MODEL, SET_BOUNDING_BOX, SET_TOOL_AND_PROCESS, SET_STEP_MODE, CLEAR_STEP_MODE } from './actions'
+import { TOGGLE_TOOLBOX_VISIBILITY, PLAY_PATH_GENERATION, PAUSE_PATH_GENERATION, COMPLETE_PATH_GENERATION, SET_TOOL_PATH, SET_PATH_AND_SUB_MODEL, SET_TOOL_POS, SET_MODEL, SET_SUB_MODEL, SET_BOUNDING_BOX, SET_TOOL_AND_PROCESS, SET_STEP_MODE, CLEAR_STEP_MODE } from './actions'
 import { calculateBoundingBox, calculateBoundingBoxDimensions, calculateIntialToolPos } from './utils'
 
 
@@ -30,6 +30,7 @@ const sceneInitialState = {
     toolDiameter: 2,
   },
   generating: false,
+  generationStartTime: null,
   path: [],
   toolPos: null,
   stepMode: false,
@@ -55,7 +56,8 @@ function scene(state = sceneInitialState, action) {
       })
     case PLAY_PATH_GENERATION:
       return Object.assign({}, state, {
-        generating: true
+        generating: true,
+        generationStartTime: new Date().getTime(),
       })
     case PAUSE_PATH_GENERATION:
       return Object.assign({}, state, {
@@ -68,6 +70,11 @@ function scene(state = sceneInitialState, action) {
     case SET_TOOL_PATH:
       return Object.assign({}, state, {
         path: action.path
+      })
+    case SET_PATH_AND_SUB_MODEL:
+      return Object.assign({}, state, {
+        path: action.path,
+        subModel: action.subModel,
       })
     case SET_TOOL_POS:
       return Object.assign({}, state, {

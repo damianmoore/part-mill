@@ -1,5 +1,3 @@
-
-
 export default class PathGenerator {
   constructor(events) {
     this.events = events
@@ -15,7 +13,10 @@ export default class PathGenerator {
       this.strategy.pause()
       clearInterval(this.stepInterval)
       this.stepInterval = null
-      this.events.setToolPath(this.toolPath)
+      clearInterval(this.animationInterval)
+      this.animationInterval = null
+      this.events.setPathAndSubModel(this.toolPath, this.strategy.subModel)
+      this.events.completePathGeneration()
       //updateStats();
     }
     else {
@@ -23,13 +24,21 @@ export default class PathGenerator {
       //setToolPath(this.toolPath)
     }
   }
+  updateStats(scene, path) {
+    var time = ((new Date().getTime() - scene.generationStartTime)/1000).toFixed(3) + ' secs';
+    var pathPoints = path.length + ' points'
+    $('#stats').html(time + ' &nbsp; ' + pathPoints);
+  }
   update(scene) {
     if (scene.generating != this.generating) {
       if (scene.generating && !this.animationInterval) {
-        this.animationInterval = setInterval(function() {
-          this.events.setToolPath(this.toolPath)
-          this.events.setSubModel(this.strategy.subModel)
-        }.bind(this), 500);
+        this.animationInterval = setInterval(function(scene) {
+          //this.events.setToolPath(this.toolPath)
+          //this.events.setSubModel(this.strategy.subModel)
+          // Combine these action calls as we don't want to re-draw the 3D scene unnescessarily
+          this.events.setPathAndSubModel(this.toolPath, this.strategy.subModel)
+          this.updateStats(scene, this.toolPath)
+        }.bind(this, scene), 500);
         this.generating = true
       }
       else if (!scene.generating) {
@@ -78,7 +87,6 @@ export default class PathGenerator {
       }
     }
     else {
-      console.log('no gen')
       clearInterval(this.stepInterval)
       this.stepInterval = null
       if (this.strategy) {
