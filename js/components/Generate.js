@@ -2,24 +2,22 @@ import React, { Component, PropTypes } from 'react'
 
 
 export default class Generate extends Component {
-  handlePlayPauseClick(e) {
-    this.props.onPlayPauseClick()
-    playPauseTool()
-  }
   render() {
-    var playPauseText = 'Generate'
+    var playPauseButton = ''
     var stepButton = ''
     if (this.props.generatingPath) {
-      playPauseText = 'Pause'
+      playPauseButton = <button className="button" onClick={this.props.onPauseClick}>Pause</button>
     }
     else {
-      stepButton = <button className="button" onClick={stepTool}>Step Tool</button>
+      playPauseButton = <button className="button" onClick={this.props.onPlayClick}>Generate</button>
+      stepButton = <button className="button" onClick={this.props.onStepClick}>Step Tool</button>
     }
+
     return (
       <div>
         <h2>Generate</h2>
         <div className="options">
-          <button className="button" onClick={e => this.handlePlayPauseClick(e)}>{playPauseText}</button>
+          {playPauseButton}
           {stepButton}
           <span id="stats"></span>
         </div>

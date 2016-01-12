@@ -1,22 +1,25 @@
 "use strict";
 
 class Strategy {
-  constructor(model, boundingBox) {
-    this.model = model;
-    this.boundingBox = boundingBox;
-    this.calculatingStep = false;
-    this.collisionMesh = null;
+  constructor(scene, events) {
+    this.scene = scene
+    this.model = scene.model
+    this.subModel = scene.subModel
+    this.tool = null
+    this.calculatingStep = false
+    this.collisionMesh = null
+    this.events = events
   }
 
   hasCollided() {
-    if (subModel && subModel.polygons.length > 0) {
-      this.collisionMesh = subModel.intersect(tool).toMesh();
+    if (this.subModel && this.subModel.polygons.length > 0) {
+      this.collisionMesh = this.subModel.intersect(this.tool).toMesh();
       if (this.collisionMesh.vertices.length > 0) {
         return true;
       }
     }
-    else if (!subModel) {
-      this.collisionMesh = subModel.intersect(tool).toMesh();
+    else if (!this.subModel && this.model) {
+      this.collisionMesh = this.model.intersect(this.tool).toMesh();
       if (this.collisionMesh.vertices.length > 0) {
         return true;
       }

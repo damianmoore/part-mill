@@ -11,7 +11,7 @@ export default class Toolbox extends Component {
       items = this.props.items
     }
     return (
-      <div>
+      <div id="toolbox">
         <h1 onClick={e => this.handleClick(e)}>Part Mill <span className="beta">beta</span></h1>
         {items}
       </div>
