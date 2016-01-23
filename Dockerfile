@@ -1,7 +1,7 @@
 FROM debian:jessie
 
 RUN apt-get update && \
-    apt-get install -y curl && \
+    apt-get install -y curl git && \
     apt-get clean && \
         rm -rf /var/lib/apt/lists/* \
                /tmp/* \
@@ -14,10 +14,11 @@ COPY package.json /srv/package.json
 ENV NPM_CONFIG_LOGLEVEL info
 RUN npm install --prefix /srv
 
-COPY * /srv/
+COPY . /srv/
 
-RUN npm build
+RUN cd /srv; npm run build
 
-CMD ["node", "/srv/server.js"]
+ENV NODE_ENV=production
+CMD cd /srv; node server.js
 
 EXPOSE 3000

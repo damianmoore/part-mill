@@ -2,6 +2,15 @@
 <html>
 <head>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title>Part Mill — CNC tool path &amp; G-code generator based on WebGL &nbsp;</title>
+  <meta name="description" content="Web-based tool for creating G-code from STL models. Runs completely in the browser and Open Source. Inspired by OpenJSCAD and PyCAM. For Shapeoko and other CNC milling machines."/>
+  <meta property="og:title" content="Part Mill"/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:url" content="https://partmill.com/" />
+  <meta property="og:image" content="https://partmill.com/img/screenshot.png"/>
+  <meta property="og:description" content="Web-based tool for creating G-code from STL models. Runs completely in the browser and Open Source."/>
+  <meta property="og:locale" content="en_GB"/>
+  <meta property="og:locale:alternate" content="en_US" />
 </head>
 
 <body>
@@ -25,6 +34,6 @@
   <script src="js/strategies/progressive-surface.js"></script>
 
   <script src="js/app.js"></script>
-  <script src="js/bundle.js"></script>
+  <script src="js/bundle.js?<%= version %>"></script>
 </body>
 </html>

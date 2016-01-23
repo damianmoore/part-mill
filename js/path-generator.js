@@ -32,6 +32,7 @@ export default class PathGenerator {
   update(scene) {
     if (scene.generating != this.generating) {
       if (scene.generating && !this.animationInterval) {
+        console.log(scene.toolPos[0])
         this.animationInterval = setInterval(function(scene) {
           //this.events.setToolPath(this.toolPath)
           //this.events.setSubModel(this.strategy.subModel)

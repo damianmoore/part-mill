@@ -106,6 +106,8 @@ class SliceStrategy extends Strategy {
     toolPath.push([pos[0], pos[1], zpos]);
     this.calculatingStep = false;
 
+    console.log(this.scene.toolPos[0] + ' -> ' + toolPos[0])
+
     return toolPath
   }
 };
